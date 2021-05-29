@@ -1,0 +1,13 @@
+.contentBuffer {
+    margin: 10px;
+}
+
+textarea {
+    width: 300px;
+    height: 150px;
+}
+
+.microtext {
+    font-size: 9px;
+    font-style: italic;
+}

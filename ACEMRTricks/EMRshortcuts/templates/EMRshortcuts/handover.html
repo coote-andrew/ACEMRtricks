@@ -1,5 +1,334 @@
 {% extends "EMRshortcuts/layout.html" %}
 
+{% block title %}Handover{% endblock %}
+
+{% block pageName %}Handover{% endblock %}
+
+
 {% block body %}
-    TODO
+    <div class="contentBuffer">
+        <form onsubmit="event.preventDefault();">
+            <textarea id="resultsText"></textarea>
+            <br>
+            <input type="submit" id="submitButton">
+        </form>
+        <p class='microtext'>Note, all processing of the information is provided within this window, no information is sent to a server for processing</p>
+        <div><h2 id="patientName">Results</h2></div>
+        <div id="resultsHere"></div>
+
+        <a href="#" id="copyResultsTextButton">copy</a>
+
+    </div>
+    <script>
+        function parseResults(text) {
+            let textPerLine = text.split("\n");
+            let ResultTitle = textPerLine[0];
+            let RegexNameText = /Results for ([A-Z-, ]+)\(.+/;
+            let Name = RegexNameText.exec(textPerLine[0])
+            document.getElementById("patientName").innerText = "Results for: " + Name[1];
+            textPerLine.shift();
+            textPerLine.shift();
+            let dictOfLabResults = {};
+            let bufferForDict = new Array();
+            //console.log(textPerLine);
+            let currentDateTime;
+            for (i = 0; i < textPerLine.length; i++) {
+                let isLineDateTime = Date.parse(textPerLine[i])
+                let regexParseDate = /([0-9]+)\/([0-9]+)\/([0-9]+) ([0-9]+):([0-9]+)/;
+
+                //console.log(regexParseDate.test(textPerLine[i]), textPerLine[i]);
+                //console.log(isLineDateTime);
+                if(regexParseDate.test(textPerLine[i])){
+                    //if (!isNaN(isLineDateTime) && !String(textPerLine[i]).charAt(0).match(/[a-z]/i)){
+                    //buffer dict add previous
+                    if(!bufferForDict.length <= 0){
+                        if(currentDateTime.toISOString() in dictOfLabResults){
+
+                            dictOfLabResults[currentDateTime.toISOString()].push(bufferForDict);
+                            //console.log("Got here");
+                            //console.log(dictOfLabResults);
+                        } else {
+
+                            dictOfLabResults[currentDateTime.toISOString()] = bufferForDict;
+                        }
+                        bufferForDict = [];
+                    }
+                    //let regexParseDate = /([0-9]+)\/([0-9]+)\/([0-9]+) ([0-9]+):([0-9]+)/;
+                    currentDateTimeRegex = regexParseDate.exec(textPerLine[i])
+                    //console.log(currentDateTimeRegex);
+                    currentDateTime = new Date(Number(currentDateTimeRegex[3]),Number(currentDateTimeRegex[2])-1,Number(currentDateTimeRegex[1]),Number(currentDateTimeRegex[4]), Number(currentDateTimeRegex[5]),0);
+                    
+                    //console.log(currentDateTime);
+                } else if (textPerLine[i].length <= 0) { 
+                } else {
+                    let arrayOfResult = textPerLine[i].split(":");
+                    //console.log(arrayOfResult);
+                    let dictOfResult = {};
+                    dictOfResult[arrayOfResult[0]] = arrayOfResult[1];
+                    bufferForDict.push(
+                        dictOfResult
+                    );
+                }
+
+            }
+            //console.log(JSON.stringify(dictOfLabResults));
+            for (const [key, value] of Object.entries(dictOfLabResults)) {
+                //console.log(key, value);
+            }
+
+            printResults(dictOfLabResults);
+            return(false);
+        }
+
+        function convertPhrase(text) {
+            let hardCodedShortenings = {
+                "Haemoglobin.":"Hb",
+                "Sodium (Blood Gas).":"Na",
+                "Potassium (Blood Gas).":"K",
+                "Chloride (Blood Gas).":"Cl",
+                "Lactate (Blood Gas).": "Lactate",
+                "POC Ketones": " ",
+                "POC Pregnancy - HCG": " ",
+                "UA - LEUKOCYTES": "leuks",
+                "UA - ERYTHROCYTES/HAEMOGLOBIN": "RBCs",
+                "Aspartate aminotransferase.":"AST", 
+                "Alanine aminotransferase.":"ALT",
+                "Alkaline phosphatase.":"ALP",
+                "Gamma glutamyl transferase.":"GGT",
+                "Bilirubin.":"bili",
+                "Albumin.":"alb",
+                "Platelets.":" ",
+                "White Cell Count.":" ",
+                "C-Reactive Protein.":" ",
+                "Corrected Calcium.": "Ca",
+                "Magnesium.":"Mg",
+                "Phosphate":"P",
+                "Lipase.": " ",
+                "Thyroid Stimulating Hormone.":" "
+            };
+            if (hardCodedShortenings[text]) {
+                return(hardCodedShortenings[text]);
+            }
+            return(text);
+        }
+
+        function convertResult(text) {
+            let tempText = text.trim();
+
+            let hardCodedPartialReplacements = [
+                ["(Haemolyzed)", "lyzed"],
+
+
+            ];
+            for(p=0;p<hardCodedPartialReplacements.length; p++){
+                tempText= tempText.replace(hardCodedPartialReplacements[p][0], hardCodedPartialReplacements[p][1]);
+            }
+            let hardCodedShortenings = {
+                "NEG.":"neg",
+                "Neg": "neg",
+                "NEG (0)":"neg",
+                "negative":"neg",
+                "Unavail":"N/A"
+            };
+            if (hardCodedShortenings[tempText]) {
+                return(hardCodedShortenings[tempText]);
+            }
+            return(tempText);
+        }
+
+        function furtherCleaningOfCompletedLabResult(text){
+            let tempText = text;
+            let hardCodedCompletedResults = [
+                ["BG Sample type. Venous /","VBG"],
+                ["BG Sample type. Arterial /", "ABG"],
+                ["FBE Hb", "FBE"]
+            ];
+            for(q=0;q<hardCodedCompletedResults.length;q++){
+                tempText = tempText.replace(hardCodedCompletedResults[q][0], hardCodedCompletedResults[q][1]);
+            }
+            return(tempText);
+        }
+
+        function printResults(dictionary){
+            var dateArray = [];
+            let regexParseDate = /([0-9]+)\/([0-9]+)\/([0-9]+), ([0-9]+):([0-9]+)/;
+            for (const [key, value] of Object.entries(dictionary)){
+                //console.log(key, value);
+                //console.log(new Date(key).getTime());
+                currentLabDate = new Date(key);
+                //console.log(dateArray.length);
+                dateForConvertingToAUS = new Date(currentLabDate).toLocaleString();
+                currentDateTimeRegex = regexParseDate.exec(dateForConvertingToAUS)
+                //console.log(currentDateTimeRegex);
+                //console.log(dateForConvertingToAUS);
+                //console.log(currentDateTimeRegex);
+
+                if(dateArray.length === 0){
+                    dateArray.push(new Date(Number(currentDateTimeRegex[3]),Number(currentDateTimeRegex[2])-1,Number(currentDateTimeRegex[1]),Number(currentDateTimeRegex[4]), Number(currentDateTimeRegex[5]),0));
+
+                } else {
+                    currentLabDate = new Date(Number(currentDateTimeRegex[3]),Number(currentDateTimeRegex[2])-1,Number(currentDateTimeRegex[1]),Number(currentDateTimeRegex[4]), Number(currentDateTimeRegex[5]),0);
+                    //console.log(dateArray)
+                    //console.log(dateArray.some(date => (date.getMonth() === currentLabDate.getMonth())));
+                    //console.log(dateArray.some(date => (date.getDate() === currentLabDate.getDate())));
+                    
+                    if(!(dateArray.some(date => (date.getMonth() === currentLabDate.getMonth() && date.getDate() === currentLabDate.getDate())))){
+                        dateArray.push(new Date(currentLabDate));
+                    }
+                }
+            }
+            dateArray.sort((a, b) => {
+                if(a.getMonth() > b.getMonth() || (a.getMonth() == b.getMonth() && a.getDate() > b.getDate())){ return -1;}
+                if(a.getMonth() < b.getMonth() || (a.getMonth() == b.getMonth() && a.getDate() < b.getDate())){ return 1;}
+                return 0;
+            })
+
+
+            var completedOutput = [];
+            for(i=0; i<dateArray.length; i++){
+                completedOutput.push([`${dateArray[i].getDate()}/${dateArray[i].getMonth() + 1}`,[]]);
+                for (const [key, value] of Object.entries(dictionary)){
+                    currentLabDate = new Date(key);
+                    if(currentLabDate.getMonth() == dateArray[i].getMonth() && currentLabDate.getDate() == dateArray[i].getDate()) {
+                        var cleanedResults = cleanResults(value);
+                        if (!cleanedResults == 0) {
+                            completedOutput[completedOutput.length-1][1].push(cleanedResults);
+                        }
+                    }
+                }
+            }
+            //console.log(completedOutput);
+            printTheCompletedArray(completedOutput);
+        }
+
+        function cleanResults(dictionary){
+            //this function converts a dictionary of values to an array with blood test name followed by an array of labtest + results
+            //console.log(dictionary);
+            const hardCodedLabs = {
+                "BG":["Sample type.","Haemoglobin.","Lactate (Blood Gas)."],
+                "Ketones":["POC Ketones"],
+                "Pregnancy": ["POC Pregnancy - HCG"],
+                "Urine": ["UA - ERYTHROCYTES/HAEMOGLOBIN", "UA - LEUKOCYTES"],
+                "LFTs": ["Aspartate aminotransferase.", "Alanine aminotransferase.","Alkaline phosphatase.","Gamma glutamyl transferase.","Bilirubin.", "Albumin."],
+                "Lipase":["Lipase."],
+                "FBE": ["Haemoglobin.", "Platelets.", "White Cell Count."],
+                "CRP":["C-Reactive Protein."],
+                "CMP":["Corrected Calcium.", "Magnesium.", "Phosphate."],
+                "TSH":["Thyroid Stimulating Hormone."],
+                "T3/4":["Tri....."]
+            
+            };
+            var uncleanedOutput = [];
+            for(j=0; j<dictionary.length;j++){
+
+            //for (const [keyDict, valueDict] of Object.entries(dictionary)){
+                var tempOutput = [];
+                for (const [keyLab, valueLab] of Object.entries(hardCodedLabs)){
+                    
+                    for(k=0; k<valueLab.length;k++){
+                        //console.log(Object.keys(dictionary[j])[0], valueLab[k], valueLab[k] == Object.keys(dictionary[j])[0]);
+                        if(valueLab[k] == Object.keys(dictionary[j])[0]){
+                            if(tempOutput.length == 0){
+                                tempOutput.push(keyLab);
+                            }
+                            tempOutput.push(`${convertPhrase(valueLab[k])} ${convertResult(dictionary[j][valueLab[k]]).trim()}`);
+                            uncleanedOutput.push(tempOutput);
+                            tempOutput = [];
+                        }
+                    }
+                }
+                if(tempOutput.length >0){
+                }
+            }
+            var output = [];
+            for (l=0; l<uncleanedOutput.length; l++){
+                if(output.length == 0){
+                    output.push([uncleanedOutput[l][0],[uncleanedOutput[l][1]]]);
+                } else {
+                    let testIfLabTestAlreadyInOutput = false;
+                    for(m=0;m<output.length; m++) {
+                        //console.log(output[m][0] == uncleanedOutput[l][0], output[m][0], uncleanedOutput[l][0])
+                        
+                        //This line adds the uncleaned outputs with the same lab into output
+                        if(output[m][0] == uncleanedOutput[l][0]){
+                            output[m][1].push(uncleanedOutput[l][1])
+                            testIfLabTestAlreadyInOutput = true;
+                        } else {
+                        }
+                    }
+                    if(!testIfLabTestAlreadyInOutput){
+                        output.push([uncleanedOutput[l][0], [uncleanedOutput[l][1]]]);
+                    }
+                }
+            
+            }
+            if(output.length >0){
+                for(r=0;r<output.length;r++){
+                    //console.log(output[r][1].length != hardCodedLabs[output[r][0]].length, output[r][1].length, hardCodedLabs[output[r][0]].length)
+                    if(output[r][1].length != hardCodedLabs[output[r][0]].length){
+                        //console.log(output[r], "FALSE");
+                        output.splice(r,1);
+                    }
+                }
+                return(output);
+            } else {
+                return(0);
+            }
+        }
+
+        function printTheCompletedArray(ArrayOfCleanedResults){
+            var output = ``;
+            for(i=0; i<ArrayOfCleanedResults.length; i++){
+                if(ArrayOfCleanedResults[i][1].length>=1){
+                    //date
+                    //console.log(ArrayOfCleanedResults[i][0]);
+                    output += `\n${ArrayOfCleanedResults[i][0]}\n`;
+                    for(j=0; j<ArrayOfCleanedResults[i][1].length; j++){
+                        //lab test and results
+                        for(l=0; l<ArrayOfCleanedResults[i][1][j].length; l++){
+                            //console.log(ArrayOfCleanedResults[i][1][j][l]);
+                            output += `${ArrayOfCleanedResults[i][1][j][l][0]} ${ArrayOfCleanedResults[i][1][j][l][1].join(" / ")}\n`;
+                        }
+                    }
+                }
+            }
+            while(output != furtherCleaningOfCompletedLabResult(output)){
+                output = furtherCleaningOfCompletedLabResult(output);
+            }
+            //console.log(output);
+            document.getElementById("resultsHere").innerText = output;
+
+        }
+
+        function CopyToClipboard(id){
+            var r = document.createRange();
+            r.selectNode(document.getElementById(id));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(r);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+        }
+
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            //console.log(Date.parse("29/04/2021 02:02"));
+            let submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", () =>{
+                let ResultsText = document.getElementById("resultsText").value;
+                parseResults(ResultsText);
+
+            })
+
+            let copyButton = document.getElementById("copyResultsTextButton");
+            copyButton.addEventListener("click", () => {
+                CopyToClipboard("resultsHere");
+                return false;
+            })
+        });
+        
+
+
+    </script>
+
+
 {% endblock %}
