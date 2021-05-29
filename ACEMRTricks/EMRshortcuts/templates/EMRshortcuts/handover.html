@@ -23,7 +23,7 @@
         function parseResults(text) {
             let textPerLine = text.split("\n");
             let ResultTitle = textPerLine[0];
-            let RegexNameText = /Results for ([A-Z-, ]+)\(.+/;
+            let RegexNameText = /Results for ([A-Z-, ']+)\(.+/;
             let Name = RegexNameText.exec(textPerLine[0])
             document.getElementById("patientName").innerText = "Results for: " + Name[1];
             textPerLine.shift();
@@ -104,7 +104,8 @@
                 "Magnesium.":"Mg",
                 "Phosphate":"P",
                 "Lipase.": " ",
-                "Thyroid Stimulating Hormone.":" "
+                "Thyroid Stimulating Hormone.":" ",
+                "eGFR.":"eGFR"
             };
             if (hardCodedShortenings[text]) {
                 return(hardCodedShortenings[text]);
@@ -215,7 +216,8 @@
                 "CRP":["C-Reactive Protein."],
                 "CMP":["Corrected Calcium.", "Magnesium.", "Phosphate."],
                 "TSH":["Thyroid Stimulating Hormone."],
-                "T3/4":["Tri....."]
+                "T3/4":["Tri....."],
+                "UECs":["Sodium.","Potassium.","Chloride.","eGFR."],
             
             };
             var uncleanedOutput = [];
