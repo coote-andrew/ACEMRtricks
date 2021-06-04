@@ -71,6 +71,15 @@
                 }
 
             }
+            if(currentDateTime.toISOString() in dictOfLabResults){
+
+                dictOfLabResults[currentDateTime.toISOString()].push(bufferForDict);
+                //console.log("Got here");
+                //console.log(dictOfLabResults);
+            } else {
+
+                dictOfLabResults[currentDateTime.toISOString()] = bufferForDict;
+            }
             //console.log(JSON.stringify(dictOfLabResults));
             for (const [key, value] of Object.entries(dictOfLabResults)) {
                 //console.log(key, value);
@@ -105,7 +114,10 @@
                 "Phosphate":"P",
                 "Lipase.": " ",
                 "Thyroid Stimulating Hormone.":" ",
-                "eGFR.":"eGFR"
+                "eGFR.":"eGFR",
+                "Sodium.": " ",
+                "Potassium.": " ",
+                "Chloride.": " "
             };
             if (hardCodedShortenings[text]) {
                 return(hardCodedShortenings[text]);
@@ -118,7 +130,8 @@
 
             let hardCodedPartialReplacements = [
                 ["(Haemolyzed)", "lyzed"],
-
+                [" (H)","*"],
+                [" (L)","*"],
 
             ];
             for(p=0;p<hardCodedPartialReplacements.length; p++){
@@ -140,8 +153,8 @@
         function furtherCleaningOfCompletedLabResult(text){
             let tempText = text;
             let hardCodedCompletedResults = [
-                ["BG Sample type. Venous /","VBG"],
-                ["BG Sample type. Arterial /", "ABG"],
+                ["BG Sample type. Venous/","VBG "],
+                ["BG Sample type. Arterial/", "ABG "],
                 ["FBE Hb", "FBE"]
             ];
             for(q=0;q<hardCodedCompletedResults.length;q++){
@@ -289,7 +302,7 @@
                         //lab test and results
                         for(l=0; l<ArrayOfCleanedResults[i][1][j].length; l++){
                             //console.log(ArrayOfCleanedResults[i][1][j][l]);
-                            output += `${ArrayOfCleanedResults[i][1][j][l][0]} ${ArrayOfCleanedResults[i][1][j][l][1].join(" / ")}\n`;
+                            output += `${ArrayOfCleanedResults[i][1][j][l][0]} ${ArrayOfCleanedResults[i][1][j][l][1].join("/")}\n`;
                         }
                     }
                 }

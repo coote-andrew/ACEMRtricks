@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "@6p+z7#t$90b&4kt@hk#3pdbmqch$$fc4b8-v6(xmus2#uq3j)"
+SECRET_KEY = "$)q6kz!&14h*)$#pty&qbor*3)yr-r@tq%w%!h9#$=dq!+i2@p"
 
 
 
@@ -30,7 +30,7 @@ SECRET_KEY = "@6p+z7#t$90b&4kt@hk#3pdbmqch$$fc4b8-v6(xmus2#uq3j)"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['acemrtricks.herokuapp.com']
+ALLOWED_HOSTS = ['acemrtricks.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware'
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
@@ -136,7 +137,7 @@ STATICFILES_DIRS = (
 )
 
 #  Add configuration for static files storage using whitenoise
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 import dj_database_url 
 prod_db  =  dj_database_url.config(conn_max_age=500)
