@@ -7,6 +7,7 @@
 
 {% block body %}
     <div class="contentBuffer">
+        <button id="addTestData" class="btn btn-link">add test data</button>
         <form onsubmit="event.preventDefault();">
             <textarea id="resultsText"></textarea>
             <br>
@@ -226,6 +227,7 @@
                     if(output[r][1].length != hardCodedLabs[output[r][0]].length){
                         //console.log(output[r], "FALSE");
                         output.splice(r,1);
+                        r--;
                     }
                 }
                 return(output);
@@ -267,6 +269,10 @@
             window.getSelection().removeAllRanges();
         }
 
+        function AddTestDataToForm(){
+            document.getElementById("resultsText").value=testData;
+            
+        }
 
         document.addEventListener("DOMContentLoaded",()=>{
             //console.log(Date.parse("29/04/2021 02:02"));
@@ -277,6 +283,11 @@
 
             })
 
+            let addTestButton = document.getElementById("addTestData");
+            addTestButton.addEventListener("click", () =>{
+                AddTestDataToForm();
+            })
+            
             let copyButton = document.getElementById("copyResultsTextButton");
             copyButton.addEventListener("click", () => {
                 CopyToClipboard("resultsHere");
