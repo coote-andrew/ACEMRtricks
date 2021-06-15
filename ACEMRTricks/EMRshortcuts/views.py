@@ -11,3 +11,7 @@ def index(request):
 
 def handoverShortcut(request):
     return render(request, "EMRshortcuts/handover.html")
+
+def handoverShortcutCustom(request):
+
+    return render(request, "EMRshortcuts/handoverCustom.html")

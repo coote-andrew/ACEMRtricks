@@ -25,8 +25,6 @@ SECRET_KEY = "$)q6kz!&14h*)$#pty&qbor*3)yr-r@tq%w%!h9#$=dq!+i2@p"
 
 
 
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -70,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'EMRshortcuts.context_processors.returnHardcoded'
             ],
         },
     },
