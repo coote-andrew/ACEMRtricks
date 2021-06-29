@@ -17,7 +17,8 @@ var hardCodedShortenings = {
     "Platelets.":" ",
     "White Cell Count.":" ",
     "C-Reactive Protein.":" ",
-    "Corrected Calcium.": " ",
+    "Calcium.":" ",
+    "Corrected Calcium.": "corr.",
     "Magnesium.":" ",
     "Phosphate.":" ",
     "Lipase.": " ",
@@ -51,19 +52,19 @@ let hardCodedCompletedResults = [
 ];
 
 const hardCodedLabs = {
-    "BG":["Sample type.","Haemoglobin.","Lactate (Blood Gas)."],
-    "Ketones":["POC Ketones"],
-    "Pregnancy": ["POC Pregnancy - HCG"],
-    "Urine": ["UA - ERYTHROCYTES/HAEMOGLOBIN", "UA - LEUKOCYTES"],
-    "LFTs": ["Aspartate aminotransferase.", "Alanine aminotransferase.","Alkaline phosphatase.","Gamma glutamyl transferase.","Bilirubin.", "Albumin."],
-    "Lipase":["Lipase."],
-    "FBE": ["Haemoglobin.", "White Cell Count.", "Platelets."],
-    "CRP":["C-Reactive Protein."],
-    "CMP":["Corrected Calcium.", "Magnesium.", "Phosphate."],
-    "TSH":["Thyroid Stimulating Hormone."],
-    "T3/4":["Tri....."],
-    "UECs":["Sodium.","Potassium.","Chloride.","eGFR."],
-    "trop":["Troponin I."],
+    "BG":[11,["Sample type.","Haemoglobin.","Lactate (Blood Gas)."]],
+    "Ketones":[10,["POC Ketones"]],
+    "Pregnancy": [9,["POC Pregnancy - HCG"]],
+    "Urine": [8,["UA - ERYTHROCYTES/HAEMOGLOBIN", "UA - LEUKOCYTES"]],
+    "LFTs": [2,["Aspartate aminotransferase.", "Alanine aminotransferase.","Alkaline phosphatase.","Gamma glutamyl transferase.","Bilirubin.", "Albumin."]],
+    "Lipase":[3,["Lipase."]],
+    "FBE": [0,["Haemoglobin.", "White Cell Count.", "Platelets.",]],
+    "CRP":[4,["C-Reactive Protein."]],
+    "CMP":[5,["Corrected Calcium.", "Magnesium.", "Phosphate."]],
+    "TSH":[7,["Thyroid Stimulating Hormone."]],
+    "T3/4":[20,["Tri....."]],
+    "UECs":[1,["Sodium.","Potassium.","Chloride.","eGFR."]],
+    "trop":[6,["Troponin I."]],
 
 };
 

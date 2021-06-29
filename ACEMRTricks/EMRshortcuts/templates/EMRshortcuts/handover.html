@@ -184,13 +184,18 @@
                 var tempOutput = [];
                 for (const [keyLab, valueLab] of Object.entries(hardCodedLabs)){
                     
-                    for(k=0; k<valueLab.length;k++){
+                    for(k=0; k<valueLab[1].length;k++){
+                        //sorting could potentially occur here
                         //console.log(Object.keys(dictionary[j])[0], valueLab[k], valueLab[k] == Object.keys(dictionary[j])[0]);
-                        if(valueLab[k] == Object.keys(dictionary[j])[0]){
+                        if(valueLab[1][k] == Object.keys(dictionary[j])[0]){
+                            var indexPos = k;
+                            var dictionaryPos = valueLab[0]
+                            var sortingPos = indexPos + dictionaryPos * 1000
                             if(tempOutput.length == 0){
                                 tempOutput.push(keyLab);
                             }
-                            tempOutput.push((`${convertPhrase(valueLab[k])} ${convertResult(dictionary[j][valueLab[k]]).trim()}`).trim());
+                            tempOutput.push((`${convertPhrase(valueLab[1][k])} ${convertResult(dictionary[j][valueLab[1][k]]).trim()}`).trim());
+                            tempOutput.push(sortingPos);
                             uncleanedOutput.push(tempOutput);
                             tempOutput = [];
                         }
@@ -198,7 +203,9 @@
                 }
                 if(tempOutput.length >0){
                 }
+                
             }
+            uncleanedOutput.sort((a, b)=>{return a[2] - b[2]})
             var output = [];
             for (l=0; l<uncleanedOutput.length; l++){
                 if(output.length == 0){
@@ -224,7 +231,7 @@
             if(output.length >0){
                 for(r=0;r<output.length;r++){
                     //console.log(output[r][1].length != hardCodedLabs[output[r][0]].length, output[r][1].length, hardCodedLabs[output[r][0]].length)
-                    if(output[r][1].length != hardCodedLabs[output[r][0]].length){
+                    if(output[r][1].length != hardCodedLabs[output[r][0]][1].length){
                         //console.log(output[r], "FALSE");
                         output.splice(r,1);
                         r--;
