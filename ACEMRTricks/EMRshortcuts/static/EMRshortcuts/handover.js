@@ -57,7 +57,7 @@ const hardCodedLabs = {
     "Urine": ["UA - ERYTHROCYTES/HAEMOGLOBIN", "UA - LEUKOCYTES"],
     "LFTs": ["Aspartate aminotransferase.", "Alanine aminotransferase.","Alkaline phosphatase.","Gamma glutamyl transferase.","Bilirubin.", "Albumin."],
     "Lipase":["Lipase."],
-    "FBE": ["Haemoglobin.", "Platelets.", "White Cell Count."],
+    "FBE": ["Haemoglobin.", "White Cell Count.", "Platelets."],
     "CRP":["C-Reactive Protein."],
     "CMP":["Corrected Calcium.", "Magnesium.", "Phosphate."],
     "TSH":["Thyroid Stimulating Hormone."],
