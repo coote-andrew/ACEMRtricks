@@ -34,6 +34,7 @@ let hardCodedPartialReplacements = [
     ["(Haemolyzed)", "lyzed"],
     [" (H)","*"],
     [" (L)","*"],
+    [" (HH)","**"]
 
 ];
 
@@ -49,6 +50,7 @@ let hardCodedCompletedResults = [
     ["BG Sample type. Venous/","VBG "],
     ["BG Sample type. Arterial/", "ABG "],
     ["FBE Hb", "FBE"]
+    ["corr. N/A/", ""]
 ];
 
 const hardCodedLabs = {
@@ -60,7 +62,7 @@ const hardCodedLabs = {
     "Lipase":[3,["Lipase."]],
     "FBE": [0,["Haemoglobin.", "White Cell Count.", "Platelets.",]],
     "CRP":[4,["C-Reactive Protein."]],
-    "CMP":[5,["Corrected Calcium.", "Magnesium.", "Phosphate."]],
+    "CMP":[5,["Calcium.","Corrected Calcium.", "Magnesium.", "Phosphate."]],
     "TSH":[7,["Thyroid Stimulating Hormone."]],
     "T3/4":[20,["Tri....."]],
     "UECs":[1,["Sodium.","Potassium.","Chloride.","eGFR."]],
