@@ -50,7 +50,7 @@ let hardCodedCompletedResults = [
     ["BG Sample type. Venous/","VBG "],
     ["BG Sample type. Arterial/", "ABG "],
     ["FBE Hb", "FBE"]
-    ["corr. N/A/", ""]
+    ["corr. N/A/", " "]
 ];
 
 const hardCodedLabs = {
