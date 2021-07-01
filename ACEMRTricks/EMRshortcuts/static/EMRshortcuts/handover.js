@@ -34,7 +34,7 @@ let hardCodedPartialReplacements = [
     ["(Haemolyzed)", "lyzed"],
     [" (H)","*"],
     [" (L)","*"],
-    [" (HH)","**"]
+    [" (HH)","**"],
 
 ];
 
@@ -49,8 +49,8 @@ let hardCodedShorteningsNeg = {
 let hardCodedCompletedResults = [
     ["BG Sample type. Venous/","VBG "],
     ["BG Sample type. Arterial/", "ABG "],
-    ["FBE Hb", "FBE"]
-    ["corr. N/A/", " "]
+    ["FBE Hb", "FBE"],
+    ["corr. N/A/", " "],
 ];
 
 const hardCodedLabs = {
